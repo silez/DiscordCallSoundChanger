@@ -3,6 +3,8 @@
  * @author XenoKeks
  * @description Change your call sound to whatever you want.
  * @version 0.0.1
+ * @source https://github.com/silez/DiscordCallSoundChanger/blob/main/CallSoundChanger.plugin.js
+ * @updateUrl https://raw.githubusercontent.com/silez/DiscordCallSoundChanger/refs/heads/main/CallSoundChanger.plugin.js
  * @donate https://paypal.me/xenokeks
  * @authorLink https://github.com/silez
  */
@@ -17,7 +19,7 @@ module.exports = class CallSoundChanger {
 
     start() {
         if (!global.ZeresPluginLibrary) return window.BdApi.alert("Library Missing", `The library plugin needed for ${this.getName()} is missing.<br /><br /> <a href="https://betterdiscord.net/ghdl?url=https://raw.githubusercontent.com/rauenzi/BDPluginLibrary/master/release/0PluginLibrary.plugin.js" target="_blank">Click here to download the library!</a>`);
-        ZLibrary.PluginUpdater.checkForUpdate(this.getName(), this.getVersion(), "LINK_TO_RAW_CODE");
+        ZLibrary.PluginUpdater.checkForUpdate(this.getName(), this.getVersion(), "https://raw.githubusercontent.com/silez/DiscordCallSoundChanger/refs/heads/main/CallSoundChanger.plugin.js");
         
         this.initialize();
     }
@@ -44,10 +46,22 @@ module.exports = class CallSoundChanger {
 
     playCustomSound() {
         if (this.settings.selectedSound !== 'default') {
-            // Hier würden wir den benutzerdefinierten Sound abspielen
-            console.log("Spiele benutzerdefinierten Sound ab:", this.settings.selectedSound);
-            // Beispiel: ZLibrary.DiscordModules.SoundModule.playSound(this.settings.selectedSound);
+            const audio = new Audio();
+            audio.src = this.getSoundPath(this.settings.selectedSound);
+            audio.volume = ZLibrary.DiscordModules.MediaEngineStore.getOutputVolume() / 100;
+            audio.play().catch(error => {
+                console.error("Fehler beim Abspielen des benutzerdefinierten Sounds:", error);
+            });
         }
+    }
+
+    getSoundPath(soundName) {
+        const soundPaths = {
+            'sound1': 'PATH_TO_SOUND_1',
+            'sound2': 'PATH_TO_SOUND_2',
+            'sound3': 'PATH_TO_SOUND_3'
+        };
+        return soundPaths[soundName] || '';
     }
 
     getSettingsPanel() {
